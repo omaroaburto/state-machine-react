@@ -9,7 +9,7 @@ const bookingMachine = createMachine(
       passengers: [],
       selectedCountry: "",
       countries: [],
-      error: '',
+      error: "",
     },
     states: {
       initial: {
@@ -34,9 +34,9 @@ const bookingMachine = createMachine(
       tickets: {
         after: {
           5000: {
-            target: 'initial',
-            actions: 'cleanContext',
-          }
+            target: "initial",
+            actions: "cleanContext",
+          },
         },
         on: {
           FINISH: "initial",
@@ -44,7 +44,10 @@ const bookingMachine = createMachine(
       },
       passengers: {
         on: {
-          DONE: "tickets",
+          DONE: {
+            target: "tickets",
+            cond: "moreThanOnePassenger",
+          },
           CANCEL: {
             target: "initial",
             actions: "cleanContext",
@@ -66,6 +69,11 @@ const bookingMachine = createMachine(
         passengers: [],
       }),
     },
+    guards:{
+      moreThanOnePassenger: (context) =>{
+        return context.passengers.length>0;
+      },
+    }
   }
 );
 
